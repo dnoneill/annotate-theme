@@ -79,11 +79,10 @@ def get_list_filepath(data_object):
         targetid = data_object['on'][0]['full']
     else:
         targetid = data_object['target']['id']
-
     numbitems = [item for item in targetid.split('/') if bool(re.match('(?=.*[0-9]$)', item))]
     targetid = '-'.join(numbitems)
     targetid = targetid.split("#xywh")[0]
-    listid = targetid.split('/')[-1].replace("_", "-").replace(":", "").replace(".json", "")
+    listid = targetid.split('/')[-1].replace("_", "-").replace(":", "").replace(".json", "").replace(".", "")
     listfilename = "{}-list.json".format(listid)
     list_file_path = os.path.join(filepath, listfilename)
     return list_file_path
