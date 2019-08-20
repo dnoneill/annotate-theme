@@ -20,7 +20,7 @@ def create_anno():
     origin_url = response['origin_url']
     list_file_path = get_list_filepath(data_object)
     lettersAndDigits = string.ascii_letters + string.digits
-    annoid = ''.join(random.choice(lettersAndDigits) for i in range(20))
+    annoid = ''.join(random.choice(lettersAndDigits) for i in range(20)).lower()
     data_object['@id'] = annoid
     updatelistdata(list_file_path, data_object, origin_url)
     file_path = os.path.join(filepath, data_object['@id']) + '.json'
