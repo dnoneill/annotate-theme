@@ -263,8 +263,8 @@ iiif-annotation * {
 
 div.content {
   margin-left: 200px;
-  padding: 1px 16px;
-  height: 1000px;
+  padding: 3em 16px 0px;
+  height: 100%;
 }
 
 @media screen and (max-width: 700px) {
@@ -283,3 +283,4 @@ div.content {
     float: none;
   }
 }
+
