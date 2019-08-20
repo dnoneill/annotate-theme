@@ -1,0 +1,285 @@
+.column {
+    float: left;
+}
+.row {
+	border-bottom: 1px solid #181818;
+	padding-bottom: 10px;
+
+}
+.anno_left {
+    width: 85%;
+
+}
+.anno_right {
+    width: 15%;
+    word-wrap:break-word;
+    margin-top: 10%;
+}
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.listbutton {
+  margin: 0 auto;
+  max-width: 8rem;
+  display: flex;
+  justify-content: center;
+  background-color: #1c00ac;
+  margin-top: .5em;
+  margin-bottom: .5em;
+  border: none;
+  color: white;
+  padding: 6px 7px;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.container {
+	max-width: none;
+}
+.prose p, .prose ol, .prose ul {
+	width: 100%;
+}
+
+#mirador_container > button {
+  opacity: 1;
+  position:relative;
+  float: left;
+  left:14px;
+  bottom:79px;
+}
+
+#anno_button {
+  display: flex;
+  justify-content: center;
+  background-color: lightblue;
+  border: none;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px;
+}
+@media (min-width: 46.25rem){
+}
+
+#storyboard_viewer > div {
+  width: 100%;
+}
+
+.main-content {
+  max-width: none;
+}
+
+#container {
+  padding-right: 20px;
+}
+
+.container {
+  padding: 20px;
+}
+.container > * {
+  max-width: none;
+}
+
+button {
+  padding: 0px;
+}
+
+.seadragonbox {
+  width: 98%;
+}
+
+.site-title {
+  font-size: 2.25rem;
+}
+
+
+.row {
+  padding-bottom: 2em;
+}
+
+#storyboard_viewer {
+  padding-top: 0px;
+}
+
+img {
+  display: inline-block;
+  margin: 0;
+}
+
+#annotation.active {
+  left: 20px;
+  width: 18%;
+}
+
+.wrapper {
+  max-width: none;
+}
+
+form[method="get"] {
+  display: none!important;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+  font-size: 12px;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  z-index: 1;
+  top: 70%;
+  left: 220%;
+  font-size: 10px;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+textarea {
+  width: 100%;
+}
+
+.copybutton {
+  border: none;
+  background-color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 1px 2px;
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 46.25rem) {
+.side-bar {
+    width: 17%;
+    min-width: 0px;
+  }
+  .main-content {
+  	margin-left: calc(17%);
+  }
+}
+
+.page-content ul li::before {
+	content: "";
+}
+
+.navigation, .site-title, .site-footer {
+  width: auto;
+}
+
+.storyboard_viewer .annotation {
+  max-width: 98%;
+}
+
+input, select, textarea{
+  color: black;
+}
+
+* {
+  box-sizing : content-box;
+}
+
+iiif-annotation * {
+  white-space: normal !important
+}
+
+.all_results {
+  box-sizing: border-box;
+}
+
+.thumbnail svg, .thumbnail img {
+  height: 50px!important;
+  width: auto!important;
+}
+
+.page-content a {
+	text-overflow: unset;
+	white-space: unset;
+}
+
+.content {
+  max-width: none!important;
+}
+
+.modal {
+  position: relative!important;
+}
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+ 
+.sidebar a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}

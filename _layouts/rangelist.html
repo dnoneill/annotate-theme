@@ -1,0 +1,11 @@
+---
+layout: default
+---
+<script type="text/javascript" src="//ncsu-libraries.github.io/iiif-annotation/latest/iiif-annotation.js"></script>
+
+{% for range in site.ranges %}
+  {% capture url %}
+    {{site.url}}{{site.baseurl}}{{range.id}}.json
+  {% endcapture %}
+  {% include embed.html tag="iiif-rangestoryboard" type="rangeurl" %}
+{% endfor %}

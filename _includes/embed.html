@@ -1,0 +1,21 @@
+<div class="row">
+<div class="column anno_left">
+	<{{include.tag}} {{include.type}}="{{url | strip }}"></{{include.tag}}>
+</div>
+<div class="column anno_right">
+	{% if include.type == 'rangeurl' %}
+	{% assign editorurl = "rangeditor/render_range?rangeormanifest=range&objecturl=" %}
+	{% else %}
+	{% assign editorurl = "annoeditor/render_anno?annotationurl=" %}
+	{% endif %}
+  <a class="listbutton" target="_blank" href="https://peaceful-depths-13455.herokuapp.com/{{editorurl|strip}}{{url | strip}}&endpoint={{site.endpoint}}">Edit</a>
+	<button id="{{annoid}}_button" class="listbutton" onclick="make_embed_code('{{annoid}}')">Show embed code</button>
+  <div id="{{annoid}}_embeditem" style="display: none;">
+    <textarea id="{{annoid}}_embedcode" rows="5">&lt;{{include.tag}} {{include.type}}="{{url| strip }}"&gt;&lt;/{{include.tag}}&gt;</textarea>
+    <button onclick="copytoclipboard('{{annoid}}_embedcode')" onmouseout="outFunc('{{annoid}}_tooltip')" class="tooltip copybutton">
+    <span class="tooltiptext" id="{{annoid}}_tooltip">Copy to clipboard</span>
+      <i class="fas fa-copy"></i>
+    </button>
+  </div>
+</div>
+</div>
