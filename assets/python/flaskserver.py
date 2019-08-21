@@ -171,7 +171,15 @@ def writetofile(filename, annotation, yaml=False):
 def get_search(anno, filename, origin_url):
     imagescr = '<iiif-annotation annotationurl="{}/{}" styling="image_only:true"></iiif-annotation>'.format(origin_url, filename.replace("_", ""))
     listname = get_list_filepath(anno).split('/')[-1]
-    annodata_data = {'tags': [], 'layout': 'searchview', 'listname': listname, 'content': [], 'imagescr': imagescr}
+    annodata_data = {'tags': [], 'layout': 'searchview', 'listname': listname, 'content': [], 'imagescr': imagescr, 'datecreated':'', 'datemodified': ''}
+    if 'oa:annotatedAt' in anno.keys():
+        annodata_data['datecreated'] = anno['oa:annotatedAt']
+    if 'created' in anno.keys():
+        annodata_data['datecreated'] = anno['created']
+    if 'oa:serializedAt' in anno.keys():
+        annodata_data['datemodified'] = anno['oa:serializedAt']
+    if 'modified' in anno.keys():
+        annodata_data['datemodified'] = anno['modified']
     annodata_filename = os.path.join(search_filepath, filename.split('/')[-1].replace('.json', '.md'))
     textdata = anno['resource'] if 'resource' in anno.keys() else anno['body']
     textdata = textdata if type(textdata) == list else [textdata]

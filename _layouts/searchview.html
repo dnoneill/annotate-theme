@@ -7,6 +7,17 @@ layout: default
 <td>Tags</td><td>{{page.tags | join: "; "}}</td>
 </tr>
 {% endif %}
+{% if page.datecreated %}
+<tr>
+<td>Date Created</td><td>{{page.datecreated | date: "%B %d, %Y %H:%M"}}</td>
+
+</tr>
+{% endif %}
+{% if page.datemodified != '' %}
+<tr>
+<td>Date Modified</td><td>{{page.datemodified| date: "%B %d, %Y %H:%M"}}</td>
+</tr>
+{% endif %}
 {% if content %}
 <tr>
 <td>Content</td><td>{{content}}</td>
