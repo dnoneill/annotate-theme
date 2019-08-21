@@ -423,9 +423,9 @@ iiif-annotation * {
 }
 
 #openseadragon {
-    height: 55em;
-    width: 93%;
-    position: relative;
+  height: 55em;
+  width: 93%;
+  position: relative;
 }
 
 #map-annotate-button {
@@ -433,10 +433,10 @@ iiif-annotation * {
   right: 0;
   margin: 10px;
   margin-right: calc(9%);
-  background-color:#000;
-  color:#fff;z
-  padding:3px 8px;
-  z-index:10000;
+  background-color: #000;
+  color:#fff;
+  padding: 3px 8px;
+  z-index: 10000;
   font-size:11px;
   text-decoration:none;
 }
