@@ -125,7 +125,7 @@ def updatelistdata(list_file_path, newannotation):
             listdata['resources'].append(newannotation)
     elif 'delete' not in newannotation.keys():
         listdata = create_list([newannotation], newannotation['@context'], newannoid)
-    if 'delete' not in newannotation.keys():
+    if listdata:
         writeannos(list_file_path, listdata)
     length = len(listdata['resources']) if listdata else 1
     return length
