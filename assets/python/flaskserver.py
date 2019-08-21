@@ -67,9 +67,10 @@ def delete_annos(annolist):
             os.remove(anno)
         else:
             existing = github_get_existing(anno)
-            data = createdatadict(anno, 'delete', existing['sha'])
-            payload = {'ref': github_branch}
-            requests.delete("{}/{}".format(github_url, anno), headers={'Authorization': 'token {}'.format(github_token)}, data=json.dumps(data), params=payload)
+            if 'sha' in existing:
+                data = createdatadict(anno, 'delete', existing['sha'])
+                payload = {'ref': github_branch}
+                requests.delete("{}/{}".format(github_url, anno), headers={'Authorization': 'token {}'.format(github_token)}, data=json.dumps(data), params=payload)
 
 def get_list_filepath(data_object):
     if type(data_object) == str:
