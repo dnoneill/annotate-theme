@@ -116,10 +116,10 @@ def updatelistdata(list_file_path, newannotation):
     newannoid = newannotation['@id']
     if listdata:
         listindex = [i for i, res in enumerate(listdata['resources']) if res['@id'] == newannoid ]
-        listindex = listindex[0] if len(listindex) > 0 else False
-        if 'delete' in newannotation.keys() and listindex != False:
+        listindex = listindex[0] if len(listindex) > 0 else None
+        if 'delete' in newannotation.keys() and listindex != None:
             del listdata['resources'][listindex]
-        elif listindex != False:
+        elif listindex != None:
             listdata['resources'][listindex] = newannotation
         else:
             listdata['resources'].append(newannotation)
