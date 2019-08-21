@@ -199,7 +199,11 @@ def get_search(anno, filename):
             annodata_data['content'].append(fieldvalues)
         elif 'value' in resource:
             annodata_data['content'].append(resource['value'])
-    content = b'\n'.join(annodata_data.pop('content'))
+    contentvalue = annodata_data.pop('content')
+    try:
+        content = b'\n'.join(contentvalue)
+    except:
+        content = '\n'.join(contentvalue)
     annodata_yaml = "---\n{}---\n{}".format(yaml.dump(annodata_data), content)
     if github_repo == '':
         writetofile(annodata_filename, annodata_yaml, True)
