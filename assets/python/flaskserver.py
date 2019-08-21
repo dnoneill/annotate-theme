@@ -111,21 +111,24 @@ def get_list_data(filepath):
 
 def updatelistdata(list_file_path, newannotation):
     listdata = get_list_data(list_file_path)
-    newannoid = newannotation['@id']
     if listdata:
-        try:
-            listindex = listdata['resources'].index(filter(lambda n: n['@id'] == newannoid, listdata['resources'])[0])
-            if 'delete' in newannotation.keys():
-                del listdata['resources'][listindex]
-            else:
-                listdata['resources'][listindex] = newannotation
-        except:
-            if 'delete' not in newannotation.keys():
-                listdata['resources'].append(newannotation)
-    elif 'delete' not in newannotation.keys():
-        listdata = create_list([newannotation], newannotation['@context'], newannoid)
-    writeannos(list_file_path, listdata)
-    return len(listdata['resources'])
+        newannoid = newannotation['@id']
+        if listdata:
+            try:
+                listindex = listdata['resources'].index(filter(lambda n: n['@id'] == newannoid, listdata['resources'])[0])
+                if 'delete' in newannotation.keys():
+                    del listdata['resources'][listindex]
+                else:
+                    listdata['resources'][listindex] = newannotation
+            except:
+                if 'delete' not in newannotation.keys():
+                    listdata['resources'].append(newannotation)
+        elif 'delete' not in newannotation.keys():
+            listdata = create_list([newannotation], newannotation['@context'], newannoid)
+        writeannos(list_file_path, listdata)
+        return len(listdata['resources'])
+    else:
+        return 1
 
 def writeannos(file_path, data_object):
     if 'list' not in file_path and 'ranges' not in file_path:
