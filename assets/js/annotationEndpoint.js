@@ -65,7 +65,7 @@
       var updated = new Date().toISOString();
       delete annotation.endpoint;
       annotation['oa:serializedAt'] = updated;
-      var senddata = {'json': annotation,'id': ID, 'origin_url': this.origin_url}
+      var senddata = {'json': annotation,'id': ID}
       jQuery.ajax({
         url: _this.server + 'update_annotations/',
         type: "POST",
@@ -85,10 +85,9 @@
 
     create: function(annotation, returnSuccess, returnError) {
       var _this = this;
-      listdata = _this.annotationsList.map(element => _.omit(element, 'endpoint'));
       var created = new Date().toISOString();
       annotation['oa:annotatedAt'] = created;
-      var senddata = {'json': annotation, 'listdata': listdata, 'index': listdata.length, 'origin_url': _this.origin_url}
+      var senddata = {'json': annotation}
       jQuery.ajax({
         url: this.server + 'create_annotations/',
         type: "POST",

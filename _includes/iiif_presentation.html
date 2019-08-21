@@ -24,7 +24,6 @@ var annotations =
 }
    $(function() {
      var api_server = '{{site.api_server}}'
-     var origin_url = '{{site.url}}{{site.baseurl}}'
       myMiradorInstance = Mirador({
        id: 'viewer',
        data: [{{data}}],
@@ -32,7 +31,7 @@ var annotations =
            loadedManifest: '{{site.data.preloadedmanifests[0]}}',
            bottomPanelVisible: {{ page.bottom_panel | default: 'true' }}
        }],
-       annotationEndpoint: { 'name':'Local Annotation Endpoint', 'module': 'LocalAnnotationEndpoint', 'options': {'server': api_server, 'allannotations' : annotations, 'origin_url': origin_url}},
+       annotationEndpoint: { 'name':'Local Annotation Endpoint', 'module': 'LocalAnnotationEndpoint', 'options': {'server': api_server, 'allannotations' : annotations}},
 			 sidePanelOptions : {
            'tocTabAvailable': true,
            'layersTabAvailable': true,

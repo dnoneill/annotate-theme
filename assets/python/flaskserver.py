@@ -17,14 +17,13 @@ annotations = []
 def create_anno():
     response = json.loads(request.data)
     data_object = response['json']
-    origin_url = response['origin_url']
     list_file_path = get_list_filepath(data_object)
     lettersAndDigits = string.ascii_letters + string.digits
     annoid = ''.join(random.choice(lettersAndDigits) for i in range(20)).lower()
     data_object['@id'] = annoid
-    updatelistdata(list_file_path, data_object, origin_url)
+    updatelistdata(list_file_path, data_object)
     file_path = os.path.join(filepath, data_object['@id']) + '.json'
-    writeannos(file_path, data_object, origin_url)
+    writeannos(file_path, data_object)
     return jsonify(data_object), 201
 
 @app.route('/update_annotations/', methods=['POST'])
@@ -33,8 +32,8 @@ def update_anno():
     data_object = response['json']
     file_path = os.path.join(filepath, response['id']) + '.json'
     list_file_path = get_list_filepath(data_object)
-    writeannos(file_path, data_object, response['origin_url'])
-    newlist = updatelistdata(list_file_path, data_object, response['origin_url'])
+    writeannos(file_path, data_object)
+    newlist = updatelistdata(list_file_path, data_object)
     return jsonify(data_object), 201
 
 @app.route('/delete_annotations/', methods=['DELETE', 'POST'])
@@ -58,8 +57,8 @@ def write_annotation():
     if 'list' in json_data['@type'].lower() or 'page' in json_data['@type'].lower():
         for anno in json_data['resources']:
             single_filename = os.path.join(file, anno['@id'])
-            writeannos(single_filename, anno, '')
-    writeannos(filename, json_data, '')
+            writeannos(single_filename, anno)
+    writeannos(filename, json_data)
     return request.data
 
 def delete_annos(annolist):
@@ -110,7 +109,7 @@ def get_list_data(filepath):
         else:
             return False
 
-def updatelistdata(list_file_path, newannotation, origin_url):
+def updatelistdata(list_file_path, newannotation):
     listdata = get_list_data(list_file_path)
     newannoid = newannotation['@id']
     if listdata:
@@ -124,25 +123,25 @@ def updatelistdata(list_file_path, newannotation, origin_url):
             if 'delete' not in newannotation.keys():
                 listdata['resources'].append(newannotation)
     elif 'delete' not in newannotation.keys():
-        listdata = create_list([newannotation], newannotation['@context'], origin_url, newannoid)
-    writeannos(list_file_path, listdata, '')
+        listdata = create_list([newannotation], newannotation['@context'], newannoid)
+    writeannos(list_file_path, listdata)
     return len(listdata['resources'])
 
-def writeannos(file_path, data_object, origin_url):
+def writeannos(file_path, data_object):
     if 'list' not in file_path and 'ranges' not in file_path:
-        get_search(data_object, file_path, origin_url)
+        get_search(data_object, file_path)
     if github_repo == '':
         writetofile(file_path, data_object)
     else:
         writetogithub(file_path, data_object)
 
-def create_list(annotation, context, origin_url, id):
+def create_list(annotation, context, id):
     if 'w3.org' in context:
         formated_annotation = {"@context":"http://www.w3.org/ns/anno.jsonld",
-        "@type": "AnnotationPage", "id": "%s/%s-list.json"% (origin_url, id), "resources": annotation}
+        "@type": "AnnotationPage", "id": "%s%s-list.json"% (origin_url, id), "resources": annotation}
     else:
         formated_annotation = {"@context":"http://iiif.io/api/presentation/2/context.json",
-            "@type": "sc:AnnotationList", "@id": "%s/%s-list.json"% (origin_url, id), "resources": annotation }
+            "@type": "sc:AnnotationList", "@id": "%s%s-list.json"% (origin_url, id), "resources": annotation }
     return formated_annotation
 
 def writetogithub(filename, annotation, yaml=False):
@@ -168,8 +167,8 @@ def writetofile(filename, annotation, yaml=False):
     with open(filename, 'w') as outfile:
         outfile.write(anno_text)
 
-def get_search(anno, filename, origin_url):
-    imagescr = '<iiif-annotation annotationurl="{}/{}" styling="image_only:true"></iiif-annotation>'.format(origin_url, filename.replace("_", ""))
+def get_search(anno, filename):
+    imagescr = '<iiif-annotation annotationurl="{}{}.json" styling="image_only:true"></iiif-annotation>'.format(origin_url, anno['@id'])
     listname = get_list_filepath(anno).split('/')[-1]
     annodata_data = {'tags': [], 'layout': 'searchview', 'listname': listname, 'content': [], 'imagescr': imagescr, 'datecreated':'', 'datemodified': ''}
     if 'oa:annotatedAt' in anno.keys():
