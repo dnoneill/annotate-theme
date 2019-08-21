@@ -25,9 +25,10 @@
       _this.uri = options.uri;
     	_this.annotationsList = [];
     	var id = options['uri'].split('/');
-      id = id.filter(word => word.match(/(?=.*[0-9]$)/gm)).join("-")
+      var numbid = id.filter(word => word.match(/(?=.*[0-9]$)/gm)).join("-");
+      id = numbid ? numbid : id.slice(-1)[0];
     	for (var key in this.allannotations){
-    		var listid = id.replace(/_/g, '-').replace(/:/g, "").replace(".json", "").replace(".", "") + '-list';
+    		var listid = id.replace(/_/g, '-').replace(/:/g, "").replace(".json", "").replace(".", "").toLowerCase() + '-list';
     		if (listid === key) {
     			var resources = JSON.parse(this.allannotations[key].output).resources;
 	    		resources.forEach(function(a) {
