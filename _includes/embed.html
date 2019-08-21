@@ -10,11 +10,11 @@
 	{% assign editorurl = "annoeditor/render_anno?annotationurl=" %}
 	{% endif %}
   <a class="listbutton" target="_blank" href="https://peaceful-depths-13455.herokuapp.com/{{editorurl|strip}}{{url | strip}}&endpoint={{site.endpoint}}">Edit</a>
-	<button id="{{annoid}}_button" class="listbutton" onclick="make_embed_code('{{annoid}}')">Show embed code</button>
-  <div id="{{annoid}}_embeditem" style="display: none;">
-    <textarea id="{{annoid}}_embedcode" rows="5">&lt;{{include.tag}} {{include.type}}="{{url| strip }}"&gt;&lt;/{{include.tag}}&gt;</textarea>
-    <button onclick="copytoclipboard('{{annoid}}_embedcode')" onmouseout="outFunc('{{annoid}}_tooltip')" class="tooltip copybutton">
-    <span class="tooltiptext" id="{{annoid}}_tooltip">Copy to clipboard</span>
+	<button id="{{item.slug}}_button" class="listbutton" onclick="make_embed_code('{{item.slug}}')">Show embed code</button>
+  <div id="{{item.slug}}_embeditem" style="display: none;">
+    <textarea id="{{item.slug}}_embedcode" rows="5">&lt;{{include.tag}} {{include.type}}="{{url| strip }}"&gt;&lt;/{{include.tag}}&gt;</textarea>
+    <button onclick="copytoclipboard('{{item.slug}}_embedcode')" onmouseout="outFunc('{{item.slug}}_tooltip')" class="tooltip copybutton">
+    <span class="tooltiptext" id="{{item.slug}}_tooltip">Copy to clipboard</span>
       <i class="fas fa-copy"></i>
     </button>
   </div>
