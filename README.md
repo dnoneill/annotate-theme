@@ -50,3 +50,6 @@ To add a custom directory to your theme-gem, please edit the regexp in `annotate
 
 The theme is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
+## Credits
+The default.html and nav.html are taken from [chromatical/jekyll-materialdocs](https://github.com/chromatical/jekyll-materialdocs). 
+The theme uses [Material Design lite](https://getmdl.io/customize/index.html)
