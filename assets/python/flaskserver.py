@@ -175,31 +175,32 @@ def get_search(anno, filename):
     listname = get_list_filepath(anno).split('/')[-1]
     annodata_data = {'tags': [], 'layout': 'searchview', 'listname': listname, 'content': [], 'imagescr': imagescr, 'datecreated':'', 'datemodified': ''}
     if 'oa:annotatedAt' in anno.keys():
-        annodata_data['datecreated'] = anno['oa:annotatedAt']
+        annodata_data['datecreated'] = encodedecode(anno['oa:annotatedAt'])
     if 'created' in anno.keys():
-        annodata_data['datecreated'] = anno['created']
+        annodata_data['datecreated'] = encodedecode(anno['created'])
     if 'oa:serializedAt' in anno.keys():
-        annodata_data['datemodified'] = anno['oa:serializedAt']
+        annodata_data['datemodified'] = encodedecode(anno['oa:serializedAt'])
     if 'modified' in anno.keys():
-        annodata_data['datemodified'] = anno['modified']
+        annodata_data['datemodified'] = encodedecode(anno['modified'])
     annodata_filename = os.path.join(search_filepath, filename.split('/')[-1].replace('.json', '.md'))
     textdata = anno['resource'] if 'resource' in anno.keys() else anno['body']
     textdata = textdata if type(textdata) == list else [textdata]
     for resource in textdata:
         chars = BeautifulSoup(resource['chars'], 'html.parser').get_text() if 'chars' in resource.keys() else ''
+        chars = encodedecode(chars)
         if chars and 'tag' in resource['@type'].lower():
-            annodata_data['tags'].append(chars.encode("utf-8"))
+            annodata_data['tags'].append(chars)
         elif 'purpose' in resource.keys() and 'tag' in resource['purpose']:
             tags_data = chars if chars else resource['value']
-            annodata_data['tags'].append(tags_data.encode("utf-8"))
+            annodata_data['tags'].append(encodedecode(tags_data))
         elif chars:
-            annodata_data['content'].append(chars.encode("utf-8"))
+            annodata_data['content'].append(chars)
         elif 'items' in resource.keys():
             field = 'value' if 'value' in resource['items'][0].keys() else 'chars'
-            fieldvalues = " ".join([item[field].encode("utf-8") for item in resource['items']])
+            fieldvalues = " ".join([encodedecode(item[field]) for item in resource['items']])
             annodata_data['content'].append(fieldvalues)
         elif 'value' in resource:
-            annodata_data['content'].append(resource['value'])
+            annodata_data['content'].append(encodedecode(resource['value']))
     contentvalue = annodata_data.pop('content')
     try:
         content = '\n'.join(contentvalue)
@@ -211,6 +212,12 @@ def get_search(anno, filename):
         writetofile(annodata_filename, annodata_yaml, True)
     else:
         writetogithub(annodata_filename, annodata_yaml, True)
+
+def encodedecode(chars):
+    if type(chars) == str:
+        return chars
+    else:
+        return chars.encode('utf8')
 
 if __name__ == "__main__":
     app.run()
