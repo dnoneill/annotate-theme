@@ -42,7 +42,7 @@ def delete_anno():
     id = response['id']
     deletefiles = [os.path.join(filepath, id) + '.json', os.path.join(search_filepath, id) + '.md']
     list_file_path = get_list_filepath(response['listuri'])
-    listlength = updatelistdata(list_file_path, {'@id': id, 'delete':  True}, '')
+    listlength = updatelistdata(list_file_path, {'@id': id, 'delete':  True})
     if listlength <= 0:
         deletefiles.append(list_file_path)
     delete_annos(deletefiles)
