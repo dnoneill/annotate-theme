@@ -421,3 +421,26 @@ iiif-annotation * {
 .modal {
   position: relative!important;
 }
+
+#openseadragon {
+    height: 55em;
+    width: 93%;
+    position: relative;
+}
+
+#map-annotate-button {
+  position:absolute;
+  right: 0;
+  margin: 10px;
+  margin-right: calc(9%);
+  background-color:#000;
+  color:#fff;z
+  padding:3px 8px;
+  z-index:10000;
+  font-size:11px;
+  text-decoration:none;
+}
+
+.annotorious-popup-field > * {
+  color: black!important;
+}
