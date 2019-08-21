@@ -78,7 +78,8 @@ def get_list_filepath(data_object):
         targetid = data_object['on'][0]['full']
     else:
         targetid = data_object['target']['id']
-    numbitems = [item for item in targetid.split('/') if bool(re.match('[0-9]', item) and len(item) > 2)]
+    regex = re.compile('[0-9]')
+    numbitems = [item for item in targetid.split('/') if bool(regex.search(item)) and len(item) > 2]
     targetid = '-'.join(numbitems)
     targetid = targetid.split("#xywh")[0]
     listid = targetid.split('/')[-1].replace("_", "-").replace(":", "").replace(".json", "").replace(".", "")
@@ -198,7 +199,7 @@ def get_search(anno, filename):
             annodata_data['content'].append(fieldvalues)
         elif 'value' in resource:
             annodata_data['content'].append(resource['value'])
-    content = '\n'.join(annodata_data.pop('content'))
+    content = b'\n'.join(annodata_data.pop('content'))
     annodata_yaml = "---\n{}---\n{}".format(yaml.dump(annodata_data), content)
     if github_repo == '':
         writetofile(annodata_filename, annodata_yaml, True)
