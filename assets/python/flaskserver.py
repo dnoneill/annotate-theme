@@ -41,7 +41,7 @@ def delete_anno():
     response = json.loads(request.data)
     id = response['id']
     deletefiles = [os.path.join(filepath, id) + '.json', os.path.join(search_filepath, id) + '.md']
-    list_file_path = get_list_filepath(response['listuri'])
+    list_file_path = get_list_filepath(str(response['listuri']))
     listlength = updatelistdata(list_file_path, {'@id': id, 'delete':  True})
     if listlength <= 0:
         deletefiles.append(list_file_path)
@@ -72,13 +72,13 @@ def delete_annos(annolist):
             requests.delete("{}/{}".format(github_url, anno), headers={'Authorization': 'token {}'.format(github_token)}, data=json.dumps(data), params=payload)
 
 def get_list_filepath(data_object):
-    if type(data_object) == str or type(data_object) == unicode:
+    if type(data_object) == str:
         targetid = data_object
     elif 'on' in data_object.keys():
         targetid = data_object['on'][0]['full']
     else:
         targetid = data_object['target']['id']
-    numbitems = [item for item in targetid.split('/') if bool(re.match('(?=.*[0-9]$)', item))]
+    numbitems = [item for item in targetid.split('/') if bool(re.match('[0-9]', item) and len(item) > 2)]
     targetid = '-'.join(numbitems)
     targetid = targetid.split("#xywh")[0]
     listid = targetid.split('/')[-1].replace("_", "-").replace(":", "").replace(".json", "").replace(".", "")
@@ -111,24 +111,22 @@ def get_list_data(filepath):
 
 def updatelistdata(list_file_path, newannotation):
     listdata = get_list_data(list_file_path)
+    newannoid = newannotation['@id']
     if listdata:
-        newannoid = newannotation['@id']
-        if listdata:
-            try:
-                listindex = listdata['resources'].index(filter(lambda n: n['@id'] == newannoid, listdata['resources'])[0])
-                if 'delete' in newannotation.keys():
-                    del listdata['resources'][listindex]
-                else:
-                    listdata['resources'][listindex] = newannotation
-            except:
-                if 'delete' not in newannotation.keys():
-                    listdata['resources'].append(newannotation)
-        elif 'delete' not in newannotation.keys():
-            listdata = create_list([newannotation], newannotation['@context'], newannoid)
+        listindex = [i for i, res in enumerate(listdata['resources']) if res['@id'] == newannoid ]
+        listindex = listindex[0] if len(listindex) > 0 else False
+        if 'delete' in newannotation.keys() and listindex:
+            del listdata['resources'][listindex]
+        elif listindex:
+            listdata['resources'][listindex] = newannotation
+        else:
+            listdata['resources'].append(newannotation)
+    elif 'delete' not in newannotation.keys():
+        listdata = create_list([newannotation], newannotation['@context'], newannoid)
+    if 'delete' not in newannotation.keys():
         writeannos(list_file_path, listdata)
-        return len(listdata['resources'])
-    else:
-        return 1
+    length = len(listdata['resources']) if listdata else 1
+    return length
 
 def writeannos(file_path, data_object):
     if 'list' not in file_path and 'ranges' not in file_path:
