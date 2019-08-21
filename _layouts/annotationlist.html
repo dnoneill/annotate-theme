@@ -2,14 +2,8 @@
 layout: default
 ---
 
-{% for annotation in site.annotations %}
-  	{% assign annoidsplit = annotation.id | split: '/'  %}
-{% assign annoid = annoidsplit.last %}
-{% capture url %}
-{{site.url}}{{site.baseurl}}{{annotation.id}}.json
-{% endcapture %}
-
- {% if annotation.id contains 'list' %}
+{% for item in site.annotations %}
+{% if item.id contains 'list' %}
  {% include embed.html tag="iiif-annotation" type="annotationlist" %}
 {% else %}
 {% include embed.html tag="iiif-annotation" type="annotationurl" %}

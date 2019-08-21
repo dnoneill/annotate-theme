@@ -1,4 +1,5 @@
 <div class="row">
+{% capture url %}{{site.url}}{{site.baseurl}}{{annotation.url}}.json{% endcapture %}
 <div class="column anno_left">
 	<{{include.tag}} {{include.type}}="{{url | strip }}"></{{include.tag}}>
 </div>
