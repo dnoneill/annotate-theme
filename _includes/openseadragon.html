@@ -142,7 +142,7 @@ function loadanno(tilesource, height, width) {
 
   anno.addHandler('onAnnotationRemoved', function(annotation) {
     var senddata = {'listuri': baseurl, 'id': annotation['id'] }
-    write_annotation(senddata, 'update', '{{site.api_server}}')
+    write_annotation(senddata, 'delete', '{{site.api_server}}')
   });
 
 }
