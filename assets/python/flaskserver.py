@@ -160,7 +160,7 @@ def create_list(annotation, context, id):
     else:
         formated_annotation = {"@context":"http://iiif.io/api/presentation/2/context.json",
             "@type": "sc:AnnotationList", "@id": "%s%s-list.json"% (origin_url, id), "resources": annotation }
-    formated_annotation = updatelistdate(annotation, formated_annotation, True)
+    formated_annotation = updatelistdate(annotation[0], formated_annotation, True)
     return formated_annotation
 
 def writetogithub(filename, annotation, yaml=False):
