@@ -122,10 +122,11 @@ def updatelistdata(list_file_path, newannotation):
             listdata['resources'][listindex] = newannotation
         else:
             listdata['resources'].append(newannotation)
+        listdata = updatelistdate(newannotation, listdata)
     elif 'delete' not in newannotation.keys():
         listdata = create_list([newannotation], newannotation['@context'], newannoid)
+        listdata = updatelistdate(newannotation, listdata, True)
     if listdata:
-        listdata = updatelistdate(newannotation, listdata)
         writeannos(list_file_path, listdata)
     length = len(listdata['resources']) if listdata else 1
     return length
@@ -160,7 +161,6 @@ def create_list(annotation, context, id):
     else:
         formated_annotation = {"@context":"http://iiif.io/api/presentation/2/context.json",
             "@type": "sc:AnnotationList", "@id": "%s%s-list.json"% (origin_url, id), "resources": annotation }
-    formated_annotation = updatelistdate(annotation[0], formated_annotation, True)
     return formated_annotation
 
 def writetogithub(filename, annotation, yaml=False):
