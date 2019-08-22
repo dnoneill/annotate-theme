@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import yaml
 import re
 import string, random
+import uuid
 
 app = Flask(__name__)
 CORS(app)
@@ -18,9 +19,7 @@ def create_anno():
     response = json.loads(request.data)
     data_object = response['json']
     list_file_path = get_list_filepath(data_object)
-    lettersAndDigits = string.ascii_letters + string.digits
-    annoid = ''.join(random.choice(lettersAndDigits) for i in range(20)).lower()
-    data_object['@id'] = annoid
+    data_object['@id'] = str(uuid.uuid1())
     updatelistdata(list_file_path, data_object)
     file_path = os.path.join(filepath, data_object['@id']) + '.json'
     writeannos(file_path, data_object)
@@ -126,9 +125,25 @@ def updatelistdata(list_file_path, newannotation):
     elif 'delete' not in newannotation.keys():
         listdata = create_list([newannotation], newannotation['@context'], newannoid)
     if listdata:
+        listdata = updatelistdate(newannotation, listdata)
         writeannos(list_file_path, listdata)
     length = len(listdata['resources']) if listdata else 1
     return length
+
+def updatelistdate(singleanno, annolist, created=False):
+    if created and 'created' in singleanno.keys():
+        annolist['created'] = singleanno['created']
+    elif 'created' in singleanno.keys():
+        annolist['modified'] = singleanno['created']
+    if created and 'oa:annotatedAt' in singleanno.keys():
+        annolist['oa:annotatedAt'] = singleanno['oa:annotatedAt']
+    elif 'oa:annotatedAt' in singleanno.keys():
+        annolist['oa:serializedAt'] = singleanno['oa:annotatedAt']
+    if 'modified' in singleanno.keys():
+        annolist['modified'] = singleanno['modified']
+    if 'oa:serializedAt' in singleanno.keys():
+        annolist['oa:serializedAt'] = singleanno['oa:serializedAt']
+    return annolist
 
 def writeannos(file_path, data_object):
     if 'list' not in file_path and 'ranges' not in file_path:
@@ -145,6 +160,7 @@ def create_list(annotation, context, id):
     else:
         formated_annotation = {"@context":"http://iiif.io/api/presentation/2/context.json",
             "@type": "sc:AnnotationList", "@id": "%s%s-list.json"% (origin_url, id), "resources": annotation }
+    formated_annotation = updatelistdate(annotation, formated_annotation, True)
     return formated_annotation
 
 def writetogithub(filename, annotation, yaml=False):
