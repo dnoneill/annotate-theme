@@ -5,17 +5,11 @@
 {% for item in site.data.preloadedos %}
 <a onclick="localStorage.setItem('osviewer', '{{item}}'); location.reload()">{{item}}</a><br>
 {% endfor %}
-<script src="https://annotorious.github.io/js/openseadragon/openseadragon.min.js"></script>
 <script src="https://annotorious.github.io/latest/annotorious.min.js"></script>
 <script src="https://annotorious.github.io/js/highlight.js"></script>
 <script type="text/javascript" src="https://annotorious.github.io/latest/anno-fancybox.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://annotorious.github.io/latest/annotorious.css">
-
-<button id="map-annotate-button" onclick="anno.activateSelector();" href="#">
-  ADD ANNOTATION
-</button>
-<div id="openseadragon" class="viewer"></div>
-
+<div id="editor" class="viewer"></div>
 <script>
 document.getElementById("enteriiifitem").onsubmit= function() {
   localStorage.setItem('osviewer', document.getElementById("iiifurl").value);
@@ -23,42 +17,17 @@ document.getElementById("enteriiifitem").onsubmit= function() {
   return false;
 }
 
-document.getElementById("openseadragon").addEventListener("load", getUrl());
-function heighwidth (tilesource) {
-  $.ajax({
-    type : "get",
-    url : tilesource,
-    success : function(data) {
-      var height = data['height'];
-      var width = data['width'];
-      loadanno(tilesource, height, width)
-    }
-  });
-}
+document.getElementById("editor").addEventListener("load", getUrl());
 
 function getUrl() {
   var tilesource = localStorage['osviewer'] ? localStorage['osviewer'] : '{{site.data.preloadedos[0]}}';
-  heighwidth(tilesource)
+  var element = document.getElementById('editor');
+  element.innerHTML = `<img src="${tilesource}" class="annotatable" style="width: 100%">`
+  loadanno(tilesource, element)
 }
 
-function loadanno(tilesource, height, width) {
-  var baseurl = tilesource.split("/info.json")[0];
-  var aspect_ratio = width/height;
-  var tilesources = {
-    type: 'legacy-image-pyramid',
-    levels: [{
-      url: `${baseurl}/full/full/0/default.jpg`,
-      height: height,
-      width: width
-    }]
-  }
-  var viewer = OpenSeadragon({
-    id: "openseadragon",
-    prefixUrl: "https://annotorious.github.io/js/openseadragon/images/",
-    showNavigator: false,
-    tileSources: tilesources
-  });
-  anno.makeAnnotatable(viewer);
+function loadanno(tilesource, element) {
+  var baseurl = tilesource.split("/full")[0];
   annotorious.plugin.addTags = function() { }
   annotorious.plugin.addTags.prototype.onInitAnnotator = function(annotator) {
     annotator.editor.addField(function(annotation) {
@@ -93,49 +62,57 @@ function loadanno(tilesource, height, width) {
     })
   }
   anno.addPlugin('addAuthor', {});
-
-  anno.showAnnotations(viewer)
-  viewer.addHandler('open', function(){
-    var all_annos = []
-    {% for annotation in site.annotations %}
-      var annotation = JSON.parse({{annotation.content | jsonify}})
-      if (annotation['@context'].indexOf('w3') > -1 && annotation.target && tilesource.indexOf(annotation.target.id.split("#xywh=")[0]) > -1){
-        all_annos.push(annotation)
-        var xywh = annotation.target.id.split("#xywh=").slice(-1)[0].split(",");
-        var cords = viewer.viewport.imageToViewportRectangle(xywh[0], xywh[1], xywh[2], xywh[3]);
-        var id = `${cords['x'].toFixed(2)}${cords['y'].toFixed(2)}${cords['width'].toFixed(2)}${cords['height'].toFixed(2)}`
-        var loadanno = {}
-        loadanno['src'] = 'dzi://openseadragon/something'
-        body = Array.isArray(annotation['body']) ? annotation['body'] : [annotation['body']];
-        var tags = []
-        for (var jar=0; jar<body.length; jar++){
-          if(body[jar]['purpose'] != 'tagging'){
-            loadanno['text'] = body[jar]['value'];
-            loadanno['shapetype'] = body[jar]['selector'] ? body[jar]['selector']['value'] : 'rect';
-          } else {
-            tags.push(body[jar]['value'])
-          }
+  var height;
+  var width;
+  
+  $('img.annotatable').on('load', function(){
+    anno.makeAnnotatable(this);
+    height = this.naturalHeight;
+    width = this.naturalWidth;
+  {% for annotation in site.annotations %}
+    var annotation = JSON.parse({{annotation.content | jsonify}})
+    {% unless annotation.url contains '-list' %}
+    if (annotation['@context'].indexOf('w3') > -1 && annotation.target && baseurl.indexOf(annotation.target.id.split("#xywh=")[0]) > -1){
+      var xywh = annotation.target.id.split("#xywh=").slice(-1)[0].split(",");
+      var loadanno = {}
+      loadanno['src'] = tilesource;
+      body = Array.isArray(annotation['body']) ? annotation['body'] : [annotation['body']];
+      var tags = []
+      for (var jar=0; jar<body.length; jar++){
+        if(body[jar]['purpose'] != 'tagging'){
+          loadanno['text'] = body[jar]['value'];
+          loadanno['shapetype'] = body[jar]['selector'] ? body[jar]['selector']['value'] : 'rect';
+        } else {
+          tags.push(body[jar]['value'])
         }
-        loadanno['shapes'] = [{"type": "rect", "geometry": cords}]
-        loadanno['tags'] = tags.join(", ");
-        loadanno['id'] = annotation['@id'];
-        loadanno['created'] = annotation['created'];
-        loadanno['modified'] = annotation['modified'];
-        var creator = annotation.creator ? annotation.creator.join(", ") : "";
-        loadanno['author'] = creator;
-        anno.addAnnotation(loadanno)
       }
-    {% endfor %}
+      
+      var cHeight = this.clientHeight;
+      var cWidth = this.clientWidth;
+      var cords = {'x': parseInt(xywh[0])/width, 'y': parseInt(xywh[1])/height, 'width': parseInt(xywh[2])/width, 'height':parseInt(xywh[3])/height}
+      loadanno['shapes'] = [{"type": "rect", "geometry": cords, "style": {}}]
+      loadanno['tags'] = tags.join(", ");
+      loadanno['id'] = annotation['@id'];
+      loadanno['created'] = annotation['created'] ? annotation['created'] : '';
+      loadanno['modified'] = annotation['modified'] ? annotation['modified'] : '';
+      loadanno['context'] = "{{site.url}}{{site.baseurl}}{{page.url}}"
+      var creator = annotation.creator ? annotation.creator.join(", ") : "";
+      loadanno['author'] = creator;
+      anno.addAnnotation(loadanno)
+    }
+    {% endunless %}
+  {% endfor %}
+  
   });
-
+  anno.showAnnotations(tilesource);
   anno.addHandler('onAnnotationCreated', function(annotation) {
-    var annotation_text = buildAnno(annotation, annotorious, viewer, baseurl)
+    var annotation_text = buildAnno(annotation, annotorious, baseurl, height, width)
     var senddata = {'json': annotation_text }
     write_annotation(senddata, 'create', '{{site.api_server}}', annotation)
   });
 
   anno.addHandler('onAnnotationUpdated', function(annotation) {
-    var annotation_text = buildAnno(annotation, annotorious, viewer, baseurl)
+    var annotation_text = buildAnno(annotation, annotorious, baseurl, height, width)
     var senddata = {'json': annotation_text,'id': annotation['id']}
     write_annotation(senddata, 'update', '{{site.api_server}}')
   });
@@ -144,6 +121,13 @@ function loadanno(tilesource, height, width) {
     var senddata = {'listuri': baseurl, 'id': annotation['id'] }
     write_annotation(senddata, 'delete', '{{site.api_server}}')
   });
-
 }
+
+$(window).on('resize', function(){
+    var annos = anno.getAnnotations();
+    anno.removeAll();
+    for (var j=0; j<annos.length; j++){
+      anno.addAnnotation(annos[j])
+    }
+});
 </script>

@@ -40,12 +40,10 @@ function write_annotation(senddata, method, apiserver, annotation=false) {
   });
 }
 
-function buildAnno(annotation, annotorious, viewer, baseurl){
-    var boundingrect = annotorious['geometry'].getBoundingRect(annotation.shapes[0]).geometry
+function buildAnno(annotation, annotorious, baseurl, height, width){
     var tags = getTags()
-    var rect =  new OpenSeadragon.Rect(boundingrect['x'], boundingrect['y'], boundingrect['width'], boundingrect['height'])
-    var imageitems = viewer.viewport.viewportToImageRectangle(rect)
-    var targetid = baseurl + `#xywh=${parseInt(imageitems['x'])},${parseInt(imageitems['y'])},${parseInt(imageitems['width'])},${parseInt(imageitems['height'])}`
+    var xywh = annotation.shapes[0].geometry;
+    var targetid = baseurl + `#xywh=${parseInt(xywh['x']*width)},${parseInt(xywh['y']*height)},${parseInt(xywh['width']*width)},${parseInt(xywh['height']*height)}`
     var shape_type = document.getElementById("shapetype") ? document.getElementById("shapetype").value : "";
     var popuptags = document.getElementById("tags") ? document.getElementById("tags").value : "";
     var author = document.getElementById("author") ? document.getElementById("author").value.split(",") : "";
