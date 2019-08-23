@@ -77,6 +77,7 @@ function buildAnno(annotation, annotorious, baseurl, height, width){
     if (annotation['created']) {
       w3_annotation['modified'] = date;
       annotation['modified'] = date;
+			w3_annotation['created'] = annotation['created'];
     } else {
       w3_annotation['created'] = date;
       annotation['created'] = date;
