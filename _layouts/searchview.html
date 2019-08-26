@@ -25,15 +25,15 @@ layout: default
 </tr>
 {% endif %}
 <tr>
-<td>Annotations</td><td><a href="{{site.url}}{{site.baseurl}}/annotations{{page.slug}}.json">{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json</a><br>
+<td>Annotations</td><td><a href="{{site.url}}{{site.baseurl}}{{page.url}}.json">{{site.url}}{{site.baseurl}}{{page.url}}.json</a><br>
 <a href="{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json">{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json</a></td>
 </tr>
 <tr>
 <td>Embed codes</td><td>
 <code>
-&lt;iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.url}}.json"&gt;&lt;/iiif-annotation&gt;
+&lt;iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}{{page.url}}.json"&gt;&lt;/iiif-annotation&gt;
 <br>
-&lt;iiif-storyboard annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.url}}.json"&gt;&lt;/iiif-storyboard&gt;
+&lt;iiif-storyboard annotationurl="{{site.url}}{{site.baseurl}}{{page.url}}.json"&gt;&lt;/iiif-storyboard&gt;
 <br>
 &lt;iiif-storyboard annotationlist="{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json"&gt;&lt;/iiif-storyboard&gt;
 </code>
@@ -41,6 +41,6 @@ layout: default
 </tr>
 </table>
 
-<iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations{{page.slug}}.json"></iiif-annotation>
+<iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations{{page.url}}.json"></iiif-annotation>
 
 <iiif-storyboard annotationlist="{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json"></iiif-storyboard>
