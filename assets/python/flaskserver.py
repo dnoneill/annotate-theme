@@ -19,9 +19,10 @@ def create_anno():
     response = json.loads(request.data)
     data_object = response['json']
     list_file_path = get_list_filepath(data_object)
-    data_object['@id'] = str(uuid.uuid1())
+    uniqid = str(uuid.uuid1())
+    data_object['@id'] = "{}{}".format(origin_url, uniqid)
     updatelistdata(list_file_path, data_object)
-    file_path = os.path.join(filepath, data_object['@id']) + '.json'
+    file_path = os.path.join(filepath, uniqid) + '.json'
     writeannos(file_path, data_object)
     return jsonify(data_object), 201
 
@@ -55,7 +56,8 @@ def write_annotation():
     filename = os.path.join(file, data['filename'])
     if 'list' in json_data['@type'].lower() or 'page' in json_data['@type'].lower():
         for anno in json_data['resources']:
-            single_filename = os.path.join(file, anno['@id'])
+            id = anno['@id'].replace(origin_url, '')
+            single_filename = os.path.join(file, id)
             writeannos(single_filename, anno)
     writeannos(filename, json_data)
     return request.data
@@ -187,7 +189,7 @@ def writetofile(filename, annotation, yaml=False):
         outfile.write(anno_text)
 
 def get_search(anno, filename):
-    imagescr = '<iiif-annotation annotationurl="{}{}.json" styling="image_only:true"></iiif-annotation>'.format(origin_url, anno['@id'])
+    imagescr = '<iiif-annotation annotationurl="{}.json" styling="image_only:true"></iiif-annotation>'.format(anno['@id'])
     listname = get_list_filepath(anno).split('/')[-1]
     annodata_data = {'tags': [], 'layout': 'searchview', 'listname': listname, 'content': [], 'imagescr': imagescr, 'datecreated':'', 'datemodified': ''}
     if 'oa:annotatedAt' in anno.keys():

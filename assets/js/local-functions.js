@@ -43,7 +43,11 @@ function write_annotation(senddata, method, apiserver, annotation=false) {
 function buildAnno(annotation, annotorious, baseurl, height, width){
     var tags = getTags()
     var xywh = annotation.shapes[0].geometry;
-    var targetid = baseurl + `#xywh=${parseInt(xywh['x']*width)},${parseInt(xywh['y']*height)},${parseInt(xywh['width']*width)},${parseInt(xywh['height']*height)}`
+    var x = parseInt(xywh['x']*width);
+    var y = parseInt(xywh['y']*height);
+    var w = parseInt(xywh['width']*width);
+    var h = parseInt(xywh['height']*height);
+    var targetid = baseurl + `#xywh=${x},${y},${w},${h}`
     var shape_type = document.getElementById("shapetype") ? document.getElementById("shapetype").value : "";
     var popuptags = document.getElementById("tags") ? document.getElementById("tags").value : "";
     var author = document.getElementById("author") ? document.getElementById("author").value.split(",") : "";
@@ -58,8 +62,8 @@ function buildAnno(annotation, annotorious, baseurl, height, width){
       "type": "TextualBody",
       "format": "text/html",
       "selector": {
-        "type": "FragmentSelector",
-        "value": `${shape_type}`
+      	"type": "FragmentSelector",
+      	"value": `${shape_type}`
       }
     }]
     body = body.concat(tags)

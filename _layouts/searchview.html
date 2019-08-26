@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+{% assign listname = page.listname | split: '.json' | first | slugify %}
 <table>
 {% if page.tags and page.tags.size > 0 %}
 <tr>
@@ -24,22 +25,22 @@ layout: default
 </tr>
 {% endif %}
 <tr>
-<td>Annotations</td><td><a href="{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json">{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json</a><br>
-<a href="{{site.url}}{{site.baseurl}}/annotations/{{page.listname}}">{{site.url}}{{site.baseurl}}/annotations/{{page.listname}}</a></td>
+<td>Annotations</td><td><a href="{{site.url}}{{site.baseurl}}/annotations{{page.slug}}.json">{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json</a><br>
+<a href="{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json">{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json</a></td>
 </tr>
 <tr>
 <td>Embed codes</td><td>
 <code>
-&lt;iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json"&gt;&lt;/iiif-annotation&gt;
+&lt;iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.url}}.json"&gt;&lt;/iiif-annotation&gt;
 <br>
-&lt;iiif-storyboard annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json"&gt;&lt;/iiif-storyboard&gt;
+&lt;iiif-storyboard annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.url}}.json"&gt;&lt;/iiif-storyboard&gt;
 <br>
-&lt;iiif-storyboard annotationlist="{{site.url}}{{site.baseurl}}/annotations/{{page.listname}}"&gt;&lt;/iiif-storyboard&gt;
+&lt;iiif-storyboard annotationlist="{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json"&gt;&lt;/iiif-storyboard&gt;
 </code>
 </td>
 </tr>
 </table>
 
-<iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations/{{page.slug}}.json"></iiif-annotation>
+<iiif-annotation annotationurl="{{site.url}}{{site.baseurl}}/annotations{{page.slug}}.json"></iiif-annotation>
 
-<iiif-storyboard annotationlist="{{site.url}}{{site.baseurl}}/annotations/{{page.listname}}"></iiif-storyboard>
+<iiif-storyboard annotationlist="{{site.url}}{{site.baseurl}}/annotations/{{listname}}.json"></iiif-storyboard>
