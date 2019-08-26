@@ -30,7 +30,8 @@ def create_anno():
 def update_anno():
     response = json.loads(request.data)
     data_object = response['json']
-    file_path = os.path.join(filepath, response['id']) + '.json'
+    id = response['id'].replace(origin_url, '')
+    file_path = os.path.join(filepath, id) + '.json'
     list_file_path = get_list_filepath(data_object)
     writeannos(file_path, data_object)
     newlist = updatelistdata(list_file_path, data_object)
@@ -39,7 +40,7 @@ def update_anno():
 @app.route('/delete_annotations/', methods=['DELETE', 'POST'])
 def delete_anno():
     response = json.loads(request.data)
-    id = response['id']
+    id = response['id'].replace(origin_url, '')
     deletefiles = [os.path.join(filepath, id) + '.json', os.path.join(search_filepath, id) + '.md']
     list_file_path = get_list_filepath(str(response['listuri']))
     listlength = updatelistdata(list_file_path, {'@id': id, 'delete':  True})
