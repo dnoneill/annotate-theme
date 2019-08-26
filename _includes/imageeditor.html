@@ -7,7 +7,7 @@
 {% endfor %}
 {% for image in site.static_files %}
   {% if image.path contains 'images/custom' %}
-  <a onclick="localStorage.setItem('osviewer', '{{site.baseurl}}{{image.url}}'); location.reload()">{{image.path}}</a><br>
+  <a onclick="localStorage.setItem('osviewer', '{{site.baseurl}}{{image.path}}'); location.reload()">{{site.baseurl}}{{image.path}}</a><br>
   {% endif %}
 {% endfor %}
 <script src="https://annotorious.github.io/latest/annotorious.min.js"></script>
