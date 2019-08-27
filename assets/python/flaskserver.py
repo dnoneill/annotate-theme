@@ -30,8 +30,10 @@ def create_anno():
 def update_anno():
     response = json.loads(request.data)
     data_object = response['json']
-    id = response['id'].replace(origin_url, '')
-    file_path = os.path.join(filepath, id) + '.json'
+    id = data_object['@id'].split('/')[-1].replace('.json', '') + '.json'
+    origin_url_id = "{}{}".format(origin_url, id)
+    data_object['@id'] =  origin_url_id if data_object['@id'] != origin_url_id else data_object['@id']
+    file_path = os.path.join(filepath, id)
     list_file_path = get_list_filepath(data_object)
     writeannos(file_path, data_object)
     newlist = updatelistdata(list_file_path, data_object)
@@ -40,8 +42,8 @@ def update_anno():
 @app.route('/delete_annotations/', methods=['DELETE', 'POST'])
 def delete_anno():
     response = json.loads(request.data)
-    id = response['id'].replace(origin_url, '')
-    deletefiles = [os.path.join(filepath, id) + '.json', os.path.join(search_filepath, id) + '.md']
+    id = response['id'].split('/')[-1].replace('.json', '') + '.json'
+    deletefiles = [os.path.join(filepath, id), os.path.join(search_filepath, id).replace('.json', '.md')]
     list_file_path = get_list_filepath(str(response['listuri']))
     listlength = updatelistdata(list_file_path, {'@id': response['id'], 'delete':  True})
     if listlength <= 0:
@@ -57,7 +59,7 @@ def write_annotation():
     filename = os.path.join(file, data['filename'])
     if 'list' in json_data['@type'].lower() or 'page' in json_data['@type'].lower():
         for anno in json_data['resources']:
-            id = anno['@id'].replace(origin_url, '')
+            id = anno['@id'].split('/')[-1].replace('.json', '') + '.json'
             single_filename = os.path.join(file, id)
             writeannos(single_filename, anno)
     writeannos(filename, json_data)
@@ -115,9 +117,9 @@ def get_list_data(filepath):
 
 def updatelistdata(list_file_path, newannotation):
     listdata = get_list_data(list_file_path)
-    newannoid = newannotation['@id']
+    newannoid = newannotation['@id'].split('/')[-1]
     if listdata:
-        listindex = [i for i, res in enumerate(listdata['resources']) if res['@id'] == newannoid ]
+        listindex = [i for i, res in enumerate(listdata['resources']) if res['@id'].split('/')[-1] == newannoid ]
         listindex = listindex[0] if len(listindex) > 0 else None
         if 'delete' in newannotation.keys() and listindex != None:
             del listdata['resources'][listindex]
