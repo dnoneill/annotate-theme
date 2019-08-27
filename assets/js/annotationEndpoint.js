@@ -25,11 +25,11 @@
       _this.uri = options.uri;
     	_this.annotationsList = [];
     	var id = options['uri'].split('/');
-      var numbid = id.filter(word => word.match(/(?=.*[0-9]$)/gm)).join("-");
+      var numbid = id.filter(word => word.match(/[0-9]/gm) && word.length > 2).join("-");
       id = numbid ? numbid : id.slice(-1)[0];
     	for (var key in this.allannotations){
-    		var listid = id.replace(/_/g, '-').replace(/:/g, "").replace(".json", "").replace(".", "").toLowerCase() + '-list';
-    		if (listid === key) {
+    		var listid = id.replace(/_/g, '-').replace(/:/g, "").replace(".json", "").replace(/\./g, "").toLowerCase() + '-list';
+        if (listid === key) {
     			var resources = JSON.parse(this.allannotations[key].output).resources;
 	    		resources.forEach(function(a) {
 	              a.endpoint = _this;
@@ -60,13 +60,11 @@
     },
 
     update: function(annotation, returnSuccess, returnError) {
-      split = annotation["@id"].split("/");
-      ID = split[split.length - 1];
       var _this = this;
       var updated = new Date().toISOString();
       delete annotation.endpoint;
       annotation['oa:serializedAt'] = updated;
-      var senddata = {'json': annotation,'id': ID}
+      var senddata = {'json': annotation}
       jQuery.ajax({
         url: _this.server + 'update_annotations/',
         type: "POST",
