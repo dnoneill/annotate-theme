@@ -31,6 +31,59 @@ function getUrl() {
   loadanno(tilesource, element)
 }
 
+function loaditems(height, width, baseurl, tilesource) {
+  {% for annotation in site.annotations %}
+    var annotation = JSON.parse({{annotation.content | jsonify}})
+    {% unless annotation.url contains '-list' %}
+    if (annotation['@context'].indexOf('w3') > -1 && annotation.target && baseurl.indexOf(annotation.target.id.split("#xywh=")[0]) > -1){
+      var xywh = annotation.target.id.split("#xywh=").slice(-1)[0].split(",");
+      var loadanno = {}
+      loadanno['src'] = tilesource;
+      body = Array.isArray(annotation['body']) ? annotation['body'] : [annotation['body']];
+      var tags = []
+      for (var jar=0; jar<body.length; jar++){
+        if(body[jar]['purpose'] != 'tagging'){
+          loadanno['text'] = body[jar]['value'];
+          loadanno['shapetype'] = body[jar]['selector'] ? body[jar]['selector']['value'] : 'rect';
+        } else {
+          tags.push(body[jar]['value'])
+        }
+      }
+
+      var cHeight = this.clientHeight;
+      var cWidth = this.clientWidth;
+      var cords = {'x': parseInt(xywh[0])/width, 'y': parseInt(xywh[1])/height, 'width': parseInt(xywh[2])/width, 'height':parseInt(xywh[3])/height}
+      loadanno['shapes'] = [{"type": "rect", "geometry": cords, "style": {}}]
+      loadanno['tags'] = tags.join(", ");
+      loadanno['id'] = annotation['@id'];
+      loadanno['created'] = annotation['created'] ? annotation['created'] : '';
+      loadanno['modified'] = annotation['modified'] ? annotation['modified'] : '';
+      loadanno['context'] = "{{site.url}}{{site.baseurl}}{{page.url}}"
+      var creator = annotation.creator ? annotation.creator.join(", ") : "";
+      loadanno['author'] = creator;
+      anno.addAnnotation(loadanno)
+    }
+    {% endunless %}
+  {% endfor %}
+  anno.showAnnotations(tilesource);
+  anno.addHandler('onAnnotationCreated', function(annotation) {
+    var annotation_text = buildAnno(annotation, annotorious, baseurl, height, width)
+    var senddata = {'json': annotation_text }
+    write_annotation(senddata, 'create', '{{site.api_server}}', annotation)
+  });
+
+  anno.addHandler('onAnnotationUpdated', function(annotation) {
+    var annotation_text = buildAnno(annotation, annotorious, baseurl, height, width)
+    var senddata = {'json': annotation_text,'id': annotation['id']}
+    write_annotation(senddata, 'update', '{{site.api_server}}')
+  });
+
+  anno.addHandler('onAnnotationRemoved', function(annotation) {
+    var senddata = {'listuri': baseurl, 'id': annotation['id'] }
+    write_annotation(senddata, 'delete', '{{site.api_server}}')
+  });
+}
+
 function loadanno(tilesource, element) {
   var baseurl = tilesource.split("/full")[0];
   annotorious.plugin.addTags = function() { }
@@ -72,59 +125,27 @@ function loadanno(tilesource, element) {
 
   $('img.annotatable').on('load', function(){
     anno.makeAnnotatable(this);
-    height = this.naturalHeight;
-    width = this.naturalWidth;
-  {% for annotation in site.annotations %}
-    var annotation = JSON.parse({{annotation.content | jsonify}})
-    {% unless annotation.url contains '-list' %}
-    if (annotation['@context'].indexOf('w3') > -1 && annotation.target && baseurl.indexOf(annotation.target.id.split("#xywh=")[0]) > -1){
-      var xywh = annotation.target.id.split("#xywh=").slice(-1)[0].split(",");
-      var loadanno = {}
-      loadanno['src'] = tilesource;
-      body = Array.isArray(annotation['body']) ? annotation['body'] : [annotation['body']];
-      var tags = []
-      for (var jar=0; jar<body.length; jar++){
-        if(body[jar]['purpose'] != 'tagging'){
-          loadanno['text'] = body[jar]['value'];
-          loadanno['shapetype'] = body[jar]['selector'] ? body[jar]['selector']['value'] : 'rect';
-        } else {
-          tags.push(body[jar]['value'])
+    var url = tilesource.split('/full').length > 1 ? tilesource.split('/full')[0] + '/info.json' : '';
+    if (url){
+      jQuery.ajax({
+        url: url,
+        type: "GET",
+        success: function(data) {
+          var height = data['height']
+          var width = data['width']
+          loaditems(height, width, baseurl, tilesource)
+        },
+        error: function() {
+          var height = this.naturalHeight;
+          var width = this.naturalWidth;
+          loaditems(height, width, baseurl, tilesource)
         }
-      }
-
-      var cHeight = this.clientHeight;
-      var cWidth = this.clientWidth;
-      var cords = {'x': parseInt(xywh[0])/width, 'y': parseInt(xywh[1])/height, 'width': parseInt(xywh[2])/width, 'height':parseInt(xywh[3])/height}
-      loadanno['shapes'] = [{"type": "rect", "geometry": cords, "style": {}}]
-      loadanno['tags'] = tags.join(", ");
-      loadanno['id'] = annotation['@id'];
-      loadanno['created'] = annotation['created'] ? annotation['created'] : '';
-      loadanno['modified'] = annotation['modified'] ? annotation['modified'] : '';
-      loadanno['context'] = "{{site.url}}{{site.baseurl}}{{page.url}}"
-      var creator = annotation.creator ? annotation.creator.join(", ") : "";
-      loadanno['author'] = creator;
-      anno.addAnnotation(loadanno)
+      });
+    } else {
+      var height = this.naturalHeight;
+      var width = this.naturalWidth;
+      loaditems(height, width, baseurl, tilesource)
     }
-    {% endunless %}
-  {% endfor %}
-
-  });
-  anno.showAnnotations(tilesource);
-  anno.addHandler('onAnnotationCreated', function(annotation) {
-    var annotation_text = buildAnno(annotation, annotorious, baseurl, height, width)
-    var senddata = {'json': annotation_text }
-    write_annotation(senddata, 'create', '{{site.api_server}}', annotation)
-  });
-
-  anno.addHandler('onAnnotationUpdated', function(annotation) {
-    var annotation_text = buildAnno(annotation, annotorious, baseurl, height, width)
-    var senddata = {'json': annotation_text,'id': annotation['id']}
-    write_annotation(senddata, 'update', '{{site.api_server}}')
-  });
-
-  anno.addHandler('onAnnotationRemoved', function(annotation) {
-    var senddata = {'listuri': baseurl, 'id': annotation['id'] }
-    write_annotation(senddata, 'delete', '{{site.api_server}}')
   });
 }
 
