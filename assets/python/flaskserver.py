@@ -20,7 +20,7 @@ def create_anno():
     data_object = response['json']
     list_file_path = get_list_filepath(data_object)
     uniqid = str(uuid.uuid1())
-    data_object['@id'] = "{}{}".format(origin_url, uniqid)
+    data_object['@id'] = "{}{}.json".format(origin_url, uniqid)
     updatelistdata(list_file_path, data_object)
     file_path = os.path.join(filepath, uniqid) + '.json'
     writeannos(file_path, data_object)
@@ -190,7 +190,7 @@ def writetofile(filename, annotation, yaml=False):
         outfile.write(anno_text)
 
 def get_search(anno, filename):
-    imagescr = '<iiif-annotation annotationurl="{}.json" styling="image_only:true"></iiif-annotation>'.format(anno['@id'])
+    imagescr = '<iiif-annotation annotationurl="{}" styling="image_only:true"></iiif-annotation>'.format(anno['@id'])
     listname = get_list_filepath(anno).split('/')[-1]
     annodata_data = {'tags': [], 'layout': 'searchview', 'listname': listname, 'content': [], 'imagescr': imagescr, 'datecreated':'', 'datemodified': ''}
     if 'oa:annotatedAt' in anno.keys():
@@ -201,7 +201,7 @@ def get_search(anno, filename):
         annodata_data['datemodified'] = encodedecode(anno['oa:serializedAt'])
     if 'modified' in anno.keys():
         annodata_data['datemodified'] = encodedecode(anno['modified'])
-    annodata_filename = os.path.join(search_filepath, filename.split('/')[-1].replace('.json', '.md'))
+    annodata_filename = os.path.join(search_filepath, filename.split('/')[-1].replace('.json', '')) + '.md'
     textdata = anno['resource'] if 'resource' in anno.keys() else anno['body']
     textdata = textdata if type(textdata) == list else [textdata]
     for resource in textdata:
