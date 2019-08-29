@@ -269,3 +269,18 @@ td, th {
   outline: 1px solid black;
   padding: 10px;
 }
+
+table {
+  width: 100%;
+}
+
+table td {
+  word-break: break-word;
+}
+
+.iiiflink {
+  display: inline-block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
