@@ -21,9 +21,10 @@ def create_anno():
     list_file_path = get_list_filepath(data_object)
     uniqid = str(uuid.uuid1())
     data_object['@id'] = "{}{}.json".format(origin_url, uniqid)
-    updatelistdata(list_file_path, data_object)
+    cleanobject = cleananno(data_object)
+    updatelistdata(list_file_path, cleanobject)
     file_path = os.path.join(filepath, uniqid) + '.json'
-    writeannos(file_path, data_object)
+    writeannos(file_path, cleanobject)
     return jsonify(data_object), 201
 
 @app.route('/update_annotations/', methods=['POST'])
@@ -33,10 +34,11 @@ def update_anno():
     id = data_object['@id'].split('/')[-1].replace('.json', '') + '.json'
     origin_url_id = "{}{}".format(origin_url, id)
     data_object['@id'] =  origin_url_id if data_object['@id'] != origin_url_id else data_object['@id']
+    cleanobject = cleananno(data_object)
     file_path = os.path.join(filepath, id)
-    list_file_path = get_list_filepath(data_object)
-    writeannos(file_path, data_object)
-    newlist = updatelistdata(list_file_path, data_object)
+    list_file_path = get_list_filepath(cleanobject)
+    writeannos(file_path, cleanobject)
+    newlist = updatelistdata(list_file_path, cleanobject)
     return jsonify(data_object), 201
 
 @app.route('/delete_annotations/', methods=['DELETE', 'POST'])
@@ -64,6 +66,18 @@ def write_annotation():
             writeannos(single_filename, anno)
     writeannos(filename, json_data)
     return request.data
+
+def cleananno(data_object):
+    print(data_object)
+    field = 'resource' if 'resource' in data_object.keys() else 'body'
+    charfield = 'chars' if 'resource' in data_object.keys() else 'value'
+    if field in data_object.keys():
+        for item in data_object[field]:
+            replace = re.finditer(r'&lt;iiif-(.*?)&gt;&lt;\/iiif-(.*?)&gt;', item[charfield])
+            for rep in replace:
+                replacestring = rep.group().replace("&lt;","<").replace("&gt;", ">").replace("&quot;", '"')
+                item[charfield] =  item[charfield].replace(rep.group(), replacestring)
+    return data_object
 
 def delete_annos(annolist):
     for anno in annolist:

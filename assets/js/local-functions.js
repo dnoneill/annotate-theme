@@ -106,3 +106,15 @@ function getTags() {
   }
   return tagging_json;
 }
+
+function escapetags(stringjson) {
+	var regex = /<iiif-(.*?)><\/iiif-(.*?)>/gm;
+	var matches = stringjson.match(regex);
+	if (matches) {
+		for (var ma=0; ma<matches.length; ma++){
+			var replacematch = matches[ma].replace(/</g, "&lt;").replace(/>/g, "&gt;")
+			stringjson = stringjson.replace(matches[ma], replacematch)
+		}
+	}
+	return stringjson;
+}

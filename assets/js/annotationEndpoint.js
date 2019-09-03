@@ -30,7 +30,8 @@
     	for (var key in this.allannotations){
     		var listid = id.replace(/_/g, '-').replace(/:/g, "").replace(".json", "").replace(/\./g, "").toLowerCase() + '-list';
         if (listid === key) {
-    			var resources = JSON.parse(this.allannotations[key].output).resources;
+          var stringjson = escapetags(this.allannotations[key].output);
+    			var resources = JSON.parse(stringjson).resources;
 	    		resources.forEach(function(a) {
 	              a.endpoint = _this;
 	            });

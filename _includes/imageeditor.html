@@ -33,7 +33,8 @@ function getUrl() {
 
 function loaditems(height, width, baseurl, tilesource) {
   {% for annotation in site.annotations %}
-    var annotation = JSON.parse({{annotation.content | jsonify}})
+    var annotation = escapetags({{annotation.content | jsonify}})
+    annotation = JSON.parse(annotation)
     {% unless annotation.url contains '-list' %}
     if (annotation['@context'].indexOf('w3') > -1 && annotation.target && baseurl.indexOf(annotation.target.id.split("#xywh=")[0]) > -1){
       var xywh = annotation.target.id.split("#xywh=").slice(-1)[0].split(",");
