@@ -1,6 +1,8 @@
 ---
 layout: default
 ---
+{{content}}
+
 {% assign listname = page.listname | split: '.json' | first | slugify %}
 <table>
 {% if page.tags and page.tags.size > 0 %}

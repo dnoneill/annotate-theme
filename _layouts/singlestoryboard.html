@@ -1,6 +1,8 @@
 ---
 layout: default
 ---
+{{content}}
+
 {% for item in site.annotations %}
 {% unless item.id contains 'list' %}
 {% include embed.html tag="iiif-storyboard" type="annotationurl" %}

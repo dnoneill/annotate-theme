@@ -1,0 +1,34 @@
+---
+layout: default
+---
+
+<div class="posts">
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {{ content }}
+
+  {% if site.posts.size > 0 %}
+  
+  <main class="mdl-layout__content">
+    {% for post in site.posts %}
+    <div class="mdl-grid portfolio-max-width">
+        <div class="mdl-cell mdl-card mdl-shadow--4dp portfolio-card">
+            {% assign date_format = site.minima.date_format | default: "%b %-d, %Y"  %}
+          <div class="mdl-card__media">{{ post.date | date: date_format }}</div>
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text"><a href="{{site.baseurl}}{{post.url}}">{{ post.title }}</a></h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                {{ post.excerpt }}
+            </div>
+        </div>
+        
+    </div>
+    {% endfor %}
+  </main>
+
+  {% endif %}
+
+</div>

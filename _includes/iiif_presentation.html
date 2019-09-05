@@ -1,9 +1,20 @@
-{% capture data %}
+{% assign manifests = '' | split: '' %}
 {% for m in site.data.preloadedmanifests %}
-	{ manifestUri: '{{m}}' }{% unless forloop.last %}, {% endunless %}
-
+  {% capture dict %}
+  { manifestUri: '{{m}}' }
+  {% endcapture %}
+  {% assign manifests = manifests | push: dict %}
 {% endfor %}
-{% endcapture %}
+{% for m in site.pages %}
+  {% if m.path contains '/manifest.json' %}
+    {% capture dict %}
+    { manifestUri: '{{site.url}}{{site.baseurl}}/{{m.path}}'}
+    {% endcapture %}
+    {% assign manifests = manifests | push: dict %}
+  {% endif %}
+{% endfor %}
+{% assign manifestdata = manifests | join: ", " %}
+
 <link rel='stylesheet' type='text/css' href='{{ site.baseurl }}/assets/build/mirador/css/mirador-combined.css'>
 
 <div id="mirador_container">
@@ -26,7 +37,7 @@ var annotations =
      var api_server = '{{site.api_server}}'
       myMiradorInstance = Mirador({
        id: 'viewer',
-       data: [{{data}}],
+       data: [{{manifestdata}}],
        windowObjects: [{
            loadedManifest: '{{site.data.preloadedmanifests[0]}}',
            bottomPanelVisible: {{ page.bottom_panel | default: 'true' }}
