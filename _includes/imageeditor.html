@@ -6,7 +6,7 @@
 <a onclick="localStorage.setItem('osviewer', '{{item}}'); location.reload()">{{item}}</a><br>
 {% endfor %}
 {% for image in site.static_files %}
-  {% if image.path contains 'images/custom' %}
+  {% if image.path contains 'custom_images' %}
   <a onclick="localStorage.setItem('osviewer', '{{site.baseurl}}{{image.path}}'); location.reload()">{{site.url}}{{site.baseurl}}{{image.path}}</a><br>
   {% endif %}
 {% endfor %}
