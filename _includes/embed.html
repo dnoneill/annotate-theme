@@ -1,7 +1,8 @@
 <div class="row">
+{% capture iiifurl %}{{site.baseurl}}{{item.url}}.json{% endcapture %}
 {% capture url %}{{site.url}}{{site.baseurl}}{{item.url}}.json{% endcapture %}
 <div class="column anno_left">
-	<{{include.tag}} {{include.type}}="{{url | strip }}"></{{include.tag}}>
+	<{{include.tag}} {{include.type}}="{{iiifurl | strip }}"></{{include.tag}}>
 </div>
 <div class="column anno_right">
 	{% if include.type == 'rangeurl' %}
