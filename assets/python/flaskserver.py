@@ -116,14 +116,14 @@ def get_list_data(filepath):
     if github_repo == "":
         if os.path.exists(filepath):
             filecontents = open(filepath).read()
-            jsoncontent = json.loads(filecontents.split("---").strip()[-1])
+            jsoncontent = json.loads(filecontents.split("---")[-1].strip())
             return jsoncontent
         else:
             return False
     else:
         existing = github_get_existing(filepath)
         if 'content' in existing.keys():
-            content = base64.b64decode(existing['content']).split("---").strip()[-1]
+            content = base64.b64decode(existing['content']).split("---")[-1].strip()
             jsoncontent = json.loads(content)
             return jsoncontent
         else:
