@@ -28,6 +28,7 @@ function getUrl() {
   var tilesource = localStorage['osviewer'] ? localStorage['osviewer'] : '{{site.data.preloadedos[0]}}';
   var element = document.getElementById('editor');
   element.innerHTML = `<img src="${tilesource}" class="annotatable" style="width: 100%">`
+  tilesource = `{{site.url}}${tilesource}`
   loadanno(tilesource, element)
 }
 

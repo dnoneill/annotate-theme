@@ -8,7 +8,7 @@
 {% for m in site.pages %}
   {% if m.path contains '/manifest.json' %}
     {% capture dict %}
-    { manifestUri: '{{site.url}}{{site.baseurl}}/{{m.path}}'}
+    { manifestUri: '{{site.baseurl}}/{{m.path}}'}
     {% endcapture %}
     {% assign manifests = manifests | push: dict %}
   {% endif %}
@@ -22,7 +22,7 @@
 <div id='viewer'></div>
 
 <script src='{{ site.baseurl }}/assets/build/mirador/mirador.min.js'></script>
-<script src='{{site.url}}{{site.baseurl}}/assets/js/annotationEndpoint.js'></script>
+<script src='{{site.baseurl}}/assets/js/annotationEndpoint.js'></script>
 
 <script type='text/javascript'>
 
