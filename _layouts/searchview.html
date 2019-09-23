@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+{% assign item = page %}
 {% assign listname = page.listname | split: '.json' | first | slugify %}
 <table>
 {% if page.tags and page.tags.size > 0 %}
@@ -40,6 +41,8 @@ layout: default
 </td>
 </tr>
 </table>
+
+{% include embed.html search=true %}
 
 <iiif-annotation annotationurl="{{site.baseurl}}{{page.url}}.json"></iiif-annotation>
 
