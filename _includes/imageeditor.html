@@ -114,11 +114,13 @@ function loadanno(tilesource, element) {
   annotorious.plugin.addAuthor = function() { }
   annotorious.plugin.addAuthor.prototype.onInitAnnotator = function(annotator) {
     annotator.editor.addField(function(annotation) {
-      var author = annotation ? annotation.author : '';
-      return 'Author: <input type="text" name="author" id="author" value="' + author + '">'
+      var creators = annotation && annotation.author ? annotation.author.split(", ") : [];
+      localStorage.getItem('creator') ? creators.push(localStorage.getItem('creator')) : '';
+      return 'Author: <input type="text" name="author" id="author" value="' + creators.join(", ") + '">'
     });
     annotator.popup.addField(function(annotation) {
-      return '<em style="color: white">Author: ' + annotation.author + '</em>';
+      var creators = annotation && annotation.author ? annotation.author : '';
+      return '<em style="color: white">Author: ' + creators + '</em>';
     })
   }
   anno.addPlugin('addAuthor', {});

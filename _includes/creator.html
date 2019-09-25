@@ -1,0 +1,27 @@
+<div id="creatorpopup">
+  <div class="modalcontent">
+  <p>{{site.popupinformation}}</p>
+  <p>This information will autopopulate the creator field in the annotation.</p>
+  <form id="entercreator" style="padding-bottom: 20px">
+    <input style="width:100%" type="text" name="creator" id="creator" placeholder="Creator name">
+  </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.getElementById("entercreator").onsubmit= function() {
+    var creator = document.getElementById("creator").value;
+    creator = creator ? creator : '';
+    localStorage.setItem('creator', creator);
+    $('#creatorpopup').hide();
+    return false;
+  }
+  // A $( document ).ready() block.
+  $( document ).ready(function() {
+    if(localStorage.getItem('creator') == null){
+      $('#creatorpopup').show();
+    } else {
+      $('#creatorpopup').hide();
+    }
+  });
+</script>
