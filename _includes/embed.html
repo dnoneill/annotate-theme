@@ -1,20 +1,10 @@
-{% if include.search != true %}
 <div class="row">
-	{% else %}
-	<div class="searchbuttons">
-{% endif %}
 {% capture iiifurl %}{{site.baseurl}}{{item.url}}.json{% endcapture %}
 {% capture url %}{{site.url}}{{site.baseurl}}{{item.url}}.json{% endcapture %}
-{% if include.search != true %}
 	<div class="column anno_left">
 		<{{include.tag}} {{include.type}}="{{iiifurl | strip }}"></{{include.tag}}>
 	</div>
-{% endif %}
-{% if include.search != true %}
 <div class="column anno_right">
-{% else %}
-<div>
-{% endif %}
 	{% if include.type == 'rangeurl' %}
 	{% assign editorurl = "rangeditor/render_range?rangeormanifest=range&objecturl=" %}
 	{% else %}
@@ -22,7 +12,6 @@
 	{% endif %}
   <a class="listbutton" target="_blank" href="https://peaceful-depths-13455.herokuapp.com/{{editorurl|strip}}{{url | strip}}&endpoint={{site.endpoint}}">Edit</a>
   <a class="listbutton" target="_blank" href="https://ncsu-libraries.github.io/iiif-annotation/tag-builder/#/?url={{url | strip}}&viewtype={{include.tag}}&listtype={{include.type}}">Tag Builder</a>
-	{% if include.search != true %}
 	<button id="{{item.slug}}_button" class="listbutton" onclick="make_embed_code('{{item.slug}}')">Show embed code</button>
   <div id="{{item.slug}}_embeditem" style="display: none;">
     <textarea id="{{item.slug}}_embedcode" rows="5">&lt;{{include.tag}} {{include.type}}="{{url| strip }}"&gt;&lt;/{{include.tag}}&gt;</textarea>
@@ -31,6 +20,5 @@
       <i class="fas fa-copy"></i>
     </button>
   </div>
-	{% endif %}
 </div>
 </div>

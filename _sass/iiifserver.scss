@@ -291,6 +291,6 @@ table td {
   color: white;
 }
 
-.searchbuttons {
-  float: right;
+.searchbuttons > * {
+  display: inline-block;
 }
