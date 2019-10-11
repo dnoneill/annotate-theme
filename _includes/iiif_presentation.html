@@ -1,3 +1,6 @@
+{% if site.creatorpopup %}
+  {% include creator.html %}
+{% endif %}
 {% assign manifests = '' | split: '' %}
 {% for m in site.data.preloadedmanifests %}
   {% capture dict %}
