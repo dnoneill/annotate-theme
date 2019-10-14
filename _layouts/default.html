@@ -2,6 +2,11 @@
 <html>
   {% include head.html %}
   <body>
+    {% if site.creatorpopup %}
+        {% if page.content contains 'mirador.min.js' or page.content contains 'annotorious.min.js' or page.content contains 'iiif_presentation.html' %}
+        {% include creator.html %}
+        {% endif %}
+      {% endif %}
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
@@ -17,6 +22,7 @@
           {% endif %}
           <a id="site-title" href="{{ '/' | absolute_url }}">{{ site.title }}</a>
         </span>
+
         <nav class="mdl-navigation">
           {% include menu.html %}
         </nav>
