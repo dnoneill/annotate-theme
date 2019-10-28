@@ -12,8 +12,8 @@ layout: default
   {% if site.posts.size > 0 %}
   
   <main class="mdl-layout__content">
-    {% for post in site.posts %}
     <div class="mdl-grid portfolio-max-width">
+    {% for post in site.posts %}
         <div class="mdl-cell mdl-card mdl-shadow--4dp portfolio-card">
             {% assign date_format = site.minima.date_format | default: "%b %-d, %Y"  %}
           <div class="mdl-card__media">{{ post.date | date: date_format }}</div>
@@ -24,9 +24,8 @@ layout: default
                 {{ post.excerpt }}
             </div>
         </div>
-        
-    </div>
     {% endfor %}
+    </div>
   </main>
 
   {% endif %}
